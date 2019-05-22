@@ -5,14 +5,14 @@ const inquirer = require('inquirer');
 const create = require('./create');
 const getOnlyDir = require('../../common/getOnlyDir');
 const moveStyled = require('./move-styled');
+const selectAction = require('../../common/selectAction');
 
 const PATH_COMPONENTS = `${__dirname}/../../templates/components`;
 
 const configComponents = {
   FC: {
-    cloneDirCallack: ({ name }) => ({ fileStr }) =>
-      fileStr.replace(/{{ COMPONENT_NAME }}/g, name),
-    afterCreate: moveStyled
+    cloneDirCallack: ({ name }) => ({ fileStr }) => fileStr.replace(/{{ COMPONENT_NAME }}/g, name),
+    afterCreate: moveStyled,
   },
   Container: {},
 };
@@ -25,13 +25,13 @@ module.exports = async () => {
       type: 'list',
       name: 'type',
       message: 'Select type component',
-      choices: getOnlyDir(PATH_COMPONENTS)
-    }
+      choices: getOnlyDir(PATH_COMPONENTS),
+    },
   ]);
   const configComponent = configComponents[type];
   const { isCreate, resultQuestions } = await create(
     `${PATH_COMPONENTS}/${type}`,
-    configComponent.cloneDirCallack
+    configComponent.cloneDirCallack,
   );
 
   if (isCreate && configComponent.afterCreate) {
