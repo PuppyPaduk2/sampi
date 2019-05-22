@@ -17,4 +17,6 @@ program.command('init').action(() => console.log('init'));
 
 program.parse(process.argv);
 
-runModule(CONFIG.paths.actions);
+runModule(CONFIG.paths.actions).catch(e => {
+  console.log(e.message);
+});

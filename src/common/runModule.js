@@ -1,32 +1,34 @@
 const inquirer = require('inquirer');
-const chalkPipe = require('chalk-pipe');
+const fs = require('fs');
 
 const getOnlyDir = require('./getOnlyDir');
 
 /**
  * @param {string} path
- * @param {Object} [propsQuestion]
  */
-module.exports = async (path, propsQuestion = {}, errorMessage = "Actions does't exist!") => {
-  const actions = getOnlyDir(path);
+module.exports = async (path) => {
+  const modules = getOnlyDir(path);
   let result = {};
 
-  if (actions.length) {
+  if (modules.length) {
     result = inquirer
       .prompt([
         {
           type: 'list',
-          name: 'action',
-          message: 'Select action',
-          choices: actions,
-          ...propsQuestion,
+          name: 'moduleName',
+          message: 'Select module',
+          choices: modules,
         },
       ])
-      .then(({ action }) => {
-        require(`${path}/${action}`)();
+      .then(({ moduleName }) => {
+        if (fs.existsSync(`${path}/${moduleName}/index.js`)) {
+          require(`${path}/${action}`)();
+        } else {
+          throw new Error("Module don't have `index.js`!");
+        }
       });
   } else {
-    console.log(chalkPipe('red')(errorMessage));
+    throw new Error("Modules does't exist!");
   }
 
   return result;
