@@ -4,29 +4,29 @@ const fs = require('fs');
 const getOnlyDir = require('./getOnlyDir');
 
 /**
- * @param {string} path
+ * @param {Object} props
+ * @param {string} props.path
+ * @param {string} props.message
  */
-module.exports = async (path) => {
+module.exports = async ({ path, message }) => {
   const modules = getOnlyDir(path);
-  let result = {};
+  const result = {};
 
   if (modules.length) {
-    result = inquirer
-      .prompt([
-        {
-          type: 'list',
-          name: 'moduleName',
-          message: 'Select module',
-          choices: modules,
-        },
-      ])
-      .then(({ moduleName }) => {
-        if (fs.existsSync(`${path}/${moduleName}/index.js`)) {
-          require(`${path}/${action}`)();
-        } else {
-          throw new Error("Module don't have `index.js`!");
-        }
-      });
+    const { moduleName } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'moduleName',
+        choices: modules,
+        message,
+      },
+    ]);
+
+    if (fs.existsSync(`${path}/${moduleName}/index.js`)) {
+      require(`${path}/${moduleName}`)();
+    } else {
+      throw new Error("Module don't have `index.js`!");
+    }
   } else {
     throw new Error("Modules does't exist!");
   }
