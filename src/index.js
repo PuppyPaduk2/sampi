@@ -2,6 +2,7 @@
 
 const program = require('commander');
 const fs = require('fs');
+const ora = require('ora');
 
 const package = require('../package.json');
 
@@ -16,7 +17,9 @@ program
   .command('remove <nameTemplate>')
   .description('Remove template')
   .action(nameTemplate => {
-    remove(`${__dirname}/templates/${nameTemplate}`, () => console.log('Remove template!'));
+    const indicator = ora('Removing template').start();
+
+    remove(`${__dirname}/templates/${nameTemplate}`, () => indicator.succeed('Remove template!'));
   });
 
 program
@@ -26,16 +29,17 @@ program
   .description('Create template')
   .action((nameTemplate, { path = '.', config }) => {
     const templatePath = `${__dirname}/templates/${nameTemplate}`;
+    const indicator = ora('Created template').start();
 
     remove(templatePath, () => {
       create(templatePath, () => {
         clone(path, `${templatePath}/template`, () => {
           if (config) {
             clone(config, `${templatePath}/config.js`, () => {
-              console.log('Create template!');
+              indicator.succeed('Create template!');
             });
           } else {
-            console.log('Create template!');
+            indicator.succeed('Create template!');
           }
         });
       });
@@ -59,10 +63,17 @@ program
       const getConfig = require(`${templatePath}/config.js`);
 
       getConfig().then(([config, commandConfig]) => {
+        const indicator = ora('Running template').start();
+
         cloneDir(`${templatePath}/template`, `${path}/${commandConfig.path || ''}`, config);
+
+        indicator.succeed('Run template!');
       });
     } else {
+      const indicator = ora('Running template').start();
       cloneDir(`${templatePath}/template`, path);
+
+      indicator.succeed('Run template!');
     }
   });
 
