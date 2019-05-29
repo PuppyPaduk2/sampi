@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/EvgenyiFedotov/cli-router#readme",
   "bin": {
-    "cli-router": "./src/index.js"
+    "template": "./src/index.js"
   },
   "dependencies": {
     "chalk-pipe": "^2.0.0",

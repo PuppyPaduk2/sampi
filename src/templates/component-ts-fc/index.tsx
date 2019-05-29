@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import Styled from './styled';
 
 const {{ COMPONENT_NAME }}: React.FC = () => (
