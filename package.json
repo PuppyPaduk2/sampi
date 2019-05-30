@@ -1,6 +1,6 @@
 {
-  "name": "cli-router",
-  "version": "0.0.1",
+  "name": "sampi",
+  "version": "0.0.2",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/EvgenyiFedotov/cli-router#readme",
   "bin": {
-    "cli-router": "./src/index.js"
+    "sampi": "src/index.js"
   },
   "dependencies": {
     "chalk-pipe": "^2.0.0",
