@@ -11,14 +11,15 @@ const { remove, create, clone } = require('./shell');
 const cloneDir = require('./clone-dir');
 const getListTemplates = require('./get-list-templates');
 
-const selectTemplate = inquirer.prompt([
-  {
-    type: 'list',
-    name: 'nameTemplate',
-    message: 'Select template',
-    choices: getListTemplates(`${__dirname}/templates`),
-  },
-]);
+const selectTemplate = () =>
+  inquirer.prompt([
+    {
+      type: 'list',
+      name: 'nameTemplate',
+      message: 'Select template',
+      choices: getListTemplates(`${__dirname}/templates`),
+    },
+  ]);
 
 const removeTemplate = nameTemplate => {
   const indicator = ora('Removing template').start();
@@ -61,7 +62,7 @@ program
   .command('remove [nameTemplate]')
   .description('Remove template')
   .action(nameTemplate => {
-    if (nameTemplate) {
+    if (!nameTemplate) {
       selectTemplate().then(({ nameTemplate }) => {
         removeTemplate(nameTemplate);
       });
