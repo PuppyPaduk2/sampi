@@ -3,11 +3,13 @@
 const program = require('commander');
 const fs = require('fs');
 const ora = require('ora');
+const inquirer = require('inquirer');
 
 const package = require('../package.json');
 
 const { remove, create, clone } = require('./shell');
 const cloneDir = require('./clone-dir');
+const getListTemplates = require('./get-list-templates');
 
 program.version(package.version);
 
@@ -46,34 +48,53 @@ program
     });
   });
 
+const runTemplate = ({ nameTemplate, path }) => {
+  const templatePath = `${__dirname}/templates/${nameTemplate}`;
+
+  if (fs.existsSync(`${templatePath}/config.js`)) {
+    /**
+     * getConfig = () => Promise<[
+     *    config: { [propName: string]: () => string },
+     *    commandConfig: { path: string }
+     * ]>
+     */
+    const getConfig = require(`${templatePath}/config.js`);
+
+    getConfig().then(([config, commandConfig]) => {
+      const indicator = ora('Running template').start();
+
+      cloneDir(`${templatePath}/template`, `${path}/${commandConfig.path || ''}`, config);
+
+      indicator.succeed('Run template!');
+    });
+  } else {
+    const indicator = ora('Running template').start();
+    cloneDir(`${templatePath}/template`, path);
+
+    indicator.succeed('Run template!');
+  }
+};
+
 program
-  .command('run <nameTemplate>')
+  .command('run [nameTemplate]')
   .option('-p, --path <path>', 'Path to template')
   .description('Run template')
   .action((nameTemplate, { path = '.' }) => {
-    const templatePath = `${__dirname}/templates/${nameTemplate}`;
-
-    if (fs.existsSync(`${templatePath}/config.js`)) {
-      /**
-       * getConfig = () => Promise<[
-       *    config: { [propName: string]: () => string },
-       *    commandConfig: { path: string }
-       * ]>
-       */
-      const getConfig = require(`${templatePath}/config.js`);
-
-      getConfig().then(([config, commandConfig]) => {
-        const indicator = ora('Running template').start();
-
-        cloneDir(`${templatePath}/template`, `${path}/${commandConfig.path || ''}`, config);
-
-        indicator.succeed('Run template!');
-      });
+    if (!nameTemplate) {
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            name: 'nameTemplate',
+            message: 'Select template',
+            choices: getListTemplates(`${__dirname}/templates`),
+          },
+        ])
+        .then(({ nameTemplate }) => {
+          runTemplate({ nameTemplate, path });
+        });
     } else {
-      const indicator = ora('Running template').start();
-      cloneDir(`${templatePath}/template`, path);
-
-      indicator.succeed('Run template!');
+      runTemplate({ nameTemplate, path });
     }
   });
 
