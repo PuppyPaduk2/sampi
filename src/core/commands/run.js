@@ -6,8 +6,6 @@ const inquirer = require('inquirer');
 const questons = require('../questions');
 const cloneDir = require('../common/clone-dir');
 
-const config = require('../../config');
-
 const cloneTemplate = (pathFrom, pathTo, config) => {
   const indicator = ora('Running template').start();
   cloneDir(pathFrom, pathTo, config);
@@ -21,6 +19,7 @@ const cloneTemplate = (pathFrom, pathTo, config) => {
  * ]>
  */
 const runTemplate = ({ nameTemplate, path }) => {
+  const config = require(program.config);
   const templatePath = `${config.paths.templates}/${nameTemplate}`;
   const templateFilesPath = `${templatePath}/template`;
 

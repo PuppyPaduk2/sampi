@@ -11,6 +11,12 @@ const initCommand = commandName => require(`${commandsPath}/${commandName}`)();
 // Init all commands
 fs.readdirSync(commandsPath).forEach(initCommand);
 
+program.option(
+  '-c, --config <path>',
+  'Path to config `sampi`',
+  value => `${process.env.PWD}/${value}`,
+  `${__dirname}/config`,
+);
 program.version(package.version);
 program.parse(process.argv);
 
