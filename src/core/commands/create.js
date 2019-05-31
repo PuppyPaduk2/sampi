@@ -3,8 +3,10 @@ const ora = require('ora');
 
 const { remove, create, clone } = require('../common/shell');
 
-const action = packageConfig => (nameTemplate, { path = '.', config }) => {
-  const templatePath = `${packageConfig.paths.templates}/${nameTemplate}`;
+const sampiConfig = require(program.config);
+
+const action = (nameTemplate, { path = '.', config }) => {
+  const templatePath = `${sampiConfig.paths.templates}/${nameTemplate}`;
   const indicator = ora('Created template').start();
 
   remove(templatePath, () => {
@@ -22,9 +24,9 @@ const action = packageConfig => (nameTemplate, { path = '.', config }) => {
   });
 };
 
-module.exports = packageConfig => program
+module.exports = () => program
   .command('create <nameTemplate>')
   .option('-p, --path <path>', 'Path to template')
-  .option('-c, --config <path>', 'Path to config')
+  .option('-c, --config <path>', 'Path to config template')
   .description('Create template')
-  .action(action(packageConfig));
+  .action(action);

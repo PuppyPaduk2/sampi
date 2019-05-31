@@ -1,10 +1,14 @@
+const program = require('commander');
+
 const getListTemplates = require('../common/get-list-templates');
 
-module.exports = packageConfig => [
+const config = require(program.config);
+
+module.exports = () => [
   {
     type: 'list',
     name: 'nameTemplate',
     message: 'Select template',
-    choices: getListTemplates(`${packageConfig.paths.templates}`),
+    choices: getListTemplates(`${config.paths.templates}`),
   },
 ];

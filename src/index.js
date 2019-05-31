@@ -2,11 +2,12 @@
 
 const program = require('commander');
 const package = require('../package.json');
-const packageConfig = require('./config');
 
-require('./core/commands/create')(packageConfig);
-require('./core/commands/remove')(packageConfig);
-require('./core/commands/run')(packageConfig);
+program.option('-c, --config <path>', 'Path to `sampi` config', `${__dirname}/config`);
+
+require('./core/commands/create')();
+require('./core/commands/remove')();
+require('./core/commands/run')();
 
 program.version(package.version);
 program.parse(process.argv);
