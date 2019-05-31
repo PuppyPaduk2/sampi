@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 const program = require('commander');
+const fs = require('fs');
 const package = require('../package.json');
 
-program.option('-c, --config <path>', 'Path to `sampi` config', `${__dirname}/config`);
+const commandsPath = `${__dirname}/core/commands`;
 
-require('./core/commands/create')();
-require('./core/commands/remove')();
-require('./core/commands/run')();
+const initCommand = commandName => require(`${commandsPath}/${commandName}`)();
+
+// Init all commands
+fs.readdirSync(commandsPath).forEach(initCommand);
 
 program.version(package.version);
 program.parse(process.argv);
