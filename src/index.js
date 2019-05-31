@@ -1,17 +1,14 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-
 const package = require('../package.json');
+const packageConfig = require('./config');
+
+require('./core/commands/create')(packageConfig);
+require('./core/commands/remove')(packageConfig);
+require('./core/commands/run')(packageConfig);
 
 program.version(package.version);
-
-program.command('init').action(() => console.log('init'));
-
-require('./core/commands/create')();
-require('./core/commands/remove')();
-require('./core/commands/run')();
-
 program.parse(process.argv);
 
 if (!program.args.length) {

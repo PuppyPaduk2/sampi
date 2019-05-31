@@ -18,32 +18,33 @@ const cloneTemplate = (pathFrom, pathTo, config) => {
  *    commandConfig: { path: string }
  * ]>
  */
-const runTemplate = ({ nameTemplate, path }) => {
-  const templatePath = `${__dirname}/../../templates/${nameTemplate}`;
+const runTemplate = ({ packageConfig, nameTemplate, path }) => {
+  const templatePath = `${packageConfig.paths.templates}/${nameTemplate}`;
+  const templateFilesPath = `${templatePath}/template`;
 
   if (fs.existsSync(`${templatePath}/config.js`)) {
     const getConfig = require(`${templatePath}/config.js`);
 
     getConfig().then(([config, commandConfig]) => {
-      cloneTemplate(`${templatePath}/template`, `${path}/${commandConfig.path || ''}`, config);
+      cloneTemplate(templateFilesPath, `${path}/${commandConfig.path || ''}`, config);
     });
   } else {
-    cloneTemplate(`${templatePath}/template`, path);
+    cloneTemplate(templateFilesPath, path);
   }
 };
 
-const action = (nameTemplate, { path = '.' }) => {
+const action = packageConfig => (nameTemplate, { path = '.' }) => {
   if (!nameTemplate) {
-    inquirer.prompt(questons.nameTemplate()).then(({ nameTemplate }) => {
-      runTemplate({ nameTemplate, path });
+    inquirer.prompt(questons.nameTemplate(packageConfig)).then(({ nameTemplate }) => {
+      runTemplate({ packageConfig, nameTemplate, path });
     });
   } else {
-    runTemplate({ nameTemplate, path });
+    runTemplate({ packageConfig, nameTemplate, path });
   }
 };
 
-module.exports = () => program
+module.exports = packageConfig => program
   .command('run [nameTemplate]')
   .option('-p, --path <path>', 'Path to template')
   .description('Run template')
-  .action(action);
+  .action(action(packageConfig));

@@ -5,23 +5,23 @@ const inquirer = require('inquirer');
 const { remove } = require('../common/shell');
 const questions = require('../questions');
 
-const removeTemplate = (nameTemplate) => {
+const removeTemplate = (packageConfig, nameTemplate) => {
   const indicator = ora('Removing template').start();
 
-  remove(`${__dirname}/../../templates/${nameTemplate}`, () => indicator.succeed('Remove template!'));
+  remove(`${packageConfig.paths.templates}/${nameTemplate}`, () => indicator.succeed('Remove template!'));
 };
 
-const action = (nameTemplate) => {
+const action = packageConfig => (nameTemplate) => {
   if (!nameTemplate) {
-    inquirer.prompt(questions.nameTemplate()).then(({ nameTemplate }) => {
-      removeTemplate(nameTemplate);
+    inquirer.prompt(questions.nameTemplate(packageConfig)).then(({ nameTemplate }) => {
+      removeTemplate(packageConfig, nameTemplate);
     });
   } else {
-    removeTemplate(nameTemplate);
+    removeTemplate(packageConfig, nameTemplate);
   }
 };
 
-module.exports = () => program
+module.exports = packageConfig => program
   .command('remove [nameTemplate]')
   .description('Remove template')
-  .action(action);
+  .action(action(packageConfig));
