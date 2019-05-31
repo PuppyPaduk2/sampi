@@ -2,7 +2,7 @@ const program = require('commander');
 
 const getListTemplates = require('../common/get-list-templates');
 
-const config = require(program.config);
+const config = require('../../config');
 
 module.exports = () => [
   {

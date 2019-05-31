@@ -5,7 +5,7 @@ const inquirer = require('inquirer');
 const { remove } = require('../common/shell');
 const questions = require('../questions');
 
-const config = require(program.config);
+const config = require('../../config');
 
 const removeTemplate = (nameTemplate) => {
   const indicator = ora('Removing template').start();

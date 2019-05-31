@@ -3,7 +3,7 @@ const ora = require('ora');
 
 const { remove, create, clone } = require('../common/shell');
 
-const sampiConfig = require(program.config);
+const sampiConfig = require('../../config');
 
 const action = (nameTemplate, { path = '.', config }) => {
   const templatePath = `${sampiConfig.paths.templates}/${nameTemplate}`;

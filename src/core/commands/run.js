@@ -6,7 +6,7 @@ const inquirer = require('inquirer');
 const questons = require('../questions');
 const cloneDir = require('../common/clone-dir');
 
-const config = require(program.config);
+const config = require('../../config');
 
 const cloneTemplate = (pathFrom, pathTo, config) => {
   const indicator = ora('Running template').start();
