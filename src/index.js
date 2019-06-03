@@ -12,7 +12,7 @@ const initCommand = commandName => require(`${commandsPath}/${commandName}`)();
 fs.readdirSync(commandsPath).forEach(initCommand);
 
 program.option(
-  '-c, --config <path>',
+  '-C, --config <path>',
   'Path to config `sampi`',
   value => `${process.env.PWD}/${value}`,
   `${__dirname}/default-config`,
