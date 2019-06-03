@@ -15,7 +15,7 @@ program.option(
   '-c, --config <path>',
   'Path to config `sampi`',
   value => `${process.env.PWD}/${value}`,
-  `${__dirname}/config`,
+  `${__dirname}/default-config`,
 );
 program.version(package.version);
 program.parse(process.argv);
