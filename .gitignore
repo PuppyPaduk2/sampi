@@ -4,4 +4,3 @@ package-lock.json
 dist
 test
 component-ts.config.js
-templates
