@@ -3,7 +3,7 @@ const program = require('commander');
 const getListTemplates = require('../common/get-list-templates');
 
 module.exports = () => {
-  const config = require(program.config);
+  const config = program.config ? require(program.config) : require('../../config');
 
   return [
     {

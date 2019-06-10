@@ -14,20 +14,20 @@ const cloneTemplate = (pathFrom, pathTo, config) => {
 
 /**
  * getConfig = () => Promise<[
- *    config: { [propName: string]: () => string },
+ *    configTemplate: { [propName: string]: () => string },
  *    commandConfig: { path: string }
  * ]>
  */
 const runTemplate = ({ nameTemplate, path }) => {
-  const config = require(program.config);
+  const config = program.config ? require(program.config) : require('../../config');
   const templatePath = `${config.paths.templates}/${nameTemplate}`;
   const templateFilesPath = `${templatePath}/template`;
 
   if (fs.existsSync(`${templatePath}/config.js`)) {
     const getConfig = require(`${templatePath}/config.js`);
 
-    getConfig().then(([config, commandConfig]) => {
-      cloneTemplate(templateFilesPath, `${path}/${commandConfig.path || ''}`, config);
+    getConfig().then(([configTemplate, commandConfig]) => {
+      cloneTemplate(templateFilesPath, `${path}/${commandConfig.path || ''}`, configTemplate);
     });
   } else {
     cloneTemplate(templateFilesPath, path);
@@ -46,6 +46,6 @@ const action = (nameTemplate, { path = '.' }) => {
 
 module.exports = () => program
   .command('run [nameTemplate]')
-  .option('-p, --path <path>', 'Path to template')
+  .option('-p, --path <path>', 'Path to install template')
   .description('Run template')
   .action(action);

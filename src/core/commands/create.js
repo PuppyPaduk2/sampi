@@ -6,8 +6,8 @@ const pt = require('path');
 const { remove, create, clone } = require('../common/shell');
 
 const action = (nameTemplate, { path = '.', templateConfig }) => {
-  const sampiConfig = require(program.config);
-  const templatePath = `${sampiConfig.paths.templates}/${nameTemplate}`;
+  const config = program.config ? require(program.config) : require('../../config');
+  const templatePath = `${config.paths.templates}/${nameTemplate}`;
   const indicator = ora('Create template').start();
   const cbSucceed = () => indicator.succeed('Create template!');
 
