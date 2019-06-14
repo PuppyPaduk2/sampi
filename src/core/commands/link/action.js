@@ -1,8 +1,10 @@
 const fs = require('fs');
 const ora = require('ora');
 
+const config = require('../../../config');
+
 // Path to modules.json
-const modulesPath = `${__dirname}/../../../../modules.json`;
+const { modulesJson } = config.paths;
 
 /**
  * @param {String} nameModule
@@ -10,16 +12,16 @@ const modulesPath = `${__dirname}/../../../../modules.json`;
  * @param {String} [options.path]
  */
 const main = async ({ nameModule, path }) => {
-  if (!fs.existsSync(modulesPath)) {
-    fs.writeFileSync(modulesPath, '{}');
+  if (!fs.existsSync(modulesJson)) {
+    fs.writeFileSync(modulesJson, '{}');
   }
 
-  const modules = require(modulesPath);
+  const modules = require(modulesJson);
   let result = false;
 
   if (!modules[nameModule]) {
     modules[nameModule] = path;
-    fs.writeFileSync(modulesPath, JSON.stringify(modules, null, '  '));
+    fs.writeFileSync(modulesJson, JSON.stringify(modules, null, '  '));
     result = true;
   }
 
@@ -31,7 +33,7 @@ const main = async ({ nameModule, path }) => {
  * @param {String} nameModule
  */
 const getPath = async (nameModule) => {
-  const modules = require(modulesPath);
+  const modules = require(modulesJson);
   return modules[nameModule];
 };
 

@@ -3,20 +3,19 @@ const fs = require('fs');
 
 const linkAction = require('../link/action');
 const cloneDir = require('../../common/clone-dir');
-
-// Config default module
-const defaultNameModule = 'main';
-const defaultPathModule = `${__dirname}/../../../../templates`;
+const conifg = require('../../../config');
 
 /**
  *
  * @param {String} nameModule
  */
 const getPathToModule = async (nameModule) => {
-  let result = await linkAction.getPath(nameModule || defaultNameModule);
+  let result = await linkAction.getPath(nameModule || conifg.defaultModuleName);
   if (!result && nameModule) {
-    indicator.warn(`Insert doesn't correct name-module, will be use ${defaultNameModule} module`);
-    result = await linkAction.getPath(defaultNameModule);
+    indicator.warn(
+      `Insert doesn't correct name-module, will be use ${conifg.defaultModuleName} module`,
+    );
+    result = await linkAction.getPath(conifg.defaultModuleName);
   }
   return result;
 };
@@ -26,7 +25,10 @@ const create = async (nameTemplate, { nameModule, path }) => {
 
   // Create link to `main` module
   if (!nameModule) {
-    linkAction.main({ nameModule: defaultNameModule, path: defaultPathModule });
+    linkAction.main({
+      nameModule: conifg.defaultModuleName,
+      path: conifg.paths.defaultModule,
+    });
   }
 
   // Get path to module by `nameModule`

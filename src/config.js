@@ -1,5 +1,7 @@
 module.exports = {
   paths: {
-    templates: `${__dirname}/../templates`,
+    defaultModule: `${__dirname}/../templates`,
+    modulesJson: `${__dirname}/../modules.json`,
   },
+  defaultModuleName: 'main',
 };
