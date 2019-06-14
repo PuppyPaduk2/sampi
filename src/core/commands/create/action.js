@@ -1,4 +1,5 @@
 const ora = require('ora');
+const fs = require('fs');
 
 const linkAction = require('../link/action');
 const cloneDir = require('../../common/clone-dir');
@@ -33,15 +34,19 @@ const create = async (nameTemplate, { nameModule, path }) => {
 
   // Create folder
   const pathTo = `${pathToModule}/${nameTemplate}/template`;
-  cloneDir.createRecursiveDir(pathTo);
+  if (fs.existsSync(pathTo)) {
+    indicator.fail('Template exist already');
+  } else {
+    cloneDir.createRecursiveDir(pathTo);
 
-  // Clone template
-  const pathFrom = process.cwd() + (path ? `/${path}` : '');
-  indicator.info(`From: ${pathFrom}`);
-  indicator.info(`To: ${pathTo}`);
-  cloneDir(pathFrom, pathTo);
+    // Clone template
+    const pathFrom = process.cwd() + (path ? `/${path}` : '');
+    indicator.info(`From: ${pathFrom}`);
+    indicator.info(`To: ${pathTo}`);
+    cloneDir(pathFrom, pathTo);
 
-  indicator.succeed('Template created');
+    indicator.succeed('Template created');
+  }
 };
 
 module.exports = (...args) => {

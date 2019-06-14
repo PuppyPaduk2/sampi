@@ -28,18 +28,18 @@ const createRecursiveDir = (path) => {
 /**
  * @param {String} pathFrom
  * @param {String} pathTo
- * @param {{ [nameProp: string]: Function }} [extenstions]
+ * @param {Function} [callback]
  */
-const cloneDir = (pathFrom, pathTo, extenstions) => {
+const cloneDir = (pathFrom, pathTo, callback) => {
   const isDir = fs.statSync(pathFrom).isDirectory();
 
   if (isDir) {
     createRecursiveDir(pathTo);
     fs.readdirSync(pathFrom).forEach((fileName) => {
-      cloneDir(`${pathFrom}/${fileName}`, `${pathTo}/${fileName}`, extenstions);
+      cloneDir(`${pathFrom}/${fileName}`, `${pathTo}/${fileName}`, callback);
     });
   } else {
-    cloneFile(pathFrom, pathTo, extenstions);
+    cloneFile(pathFrom, pathTo, callback);
   }
 };
 

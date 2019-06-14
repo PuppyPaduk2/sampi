@@ -7,36 +7,41 @@ const getListTemplates = require('../../common/get-list-templates');
 const cloneDir = require('../../common/clone-dir');
 const package = require('../../../index');
 
-const use = async (nameTemplate, { nameModule, path }) => {
+const use = async (nameModule, { path }) => {
   const indicator = ora('Use template').start();
 
   // Get path to module
-  const pathToModule = await createAction.getPathToModule(nameModule);
-  indicator.info(`Path to module: ${pathToModule}`);
+  const pathModule = await createAction.getPathToModule(nameModule);
+  indicator.info(`Path to module: ${pathModule}`);
 
-  // Get correct name template
-  if (!nameTemplate) {
-    const resQuestions = await inquirer.prompt([
-      {
-        type: 'list',
-        name: 'nameTemplate',
-        message: 'Select template',
-        choices: getListTemplates(pathToModule),
-      },
-    ]);
-    nameTemplate = resQuestions.nameTemplate;
-  }
+  // Get name template
+  const { nameTemplate } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'nameTemplate',
+      message: 'Select template',
+      choices: getListTemplates(pathModule),
+    },
+  ]);
 
   // Clone template
   const pathTo = process.cwd() + (path ? `/${path}` : '');
-  const pathTemplate = `${pathToModule}/${nameTemplate}`;
+  const pathTemplate = `${pathModule}/${nameTemplate}`;
   const pathFrom = `${pathTemplate}/template`;
   const pathIndex = `${pathTemplate}/index.js`;
 
   // Check `index.js`, if exist run his
   if (fs.existsSync(pathIndex)) {
-    indicator.start('Setup template');
-    await require(pathIndex)({ indicator, pathFrom, pathTo, pathTemplate });
+    await require(pathIndex)(
+      {
+        pathModule,
+        pathTemplate,
+        pathFrom,
+        pathTo,
+      },
+      package,
+      { inquirer, ora },
+    );
   } else {
     indicator
       .info(`From: ${pathFrom}`)

@@ -1,6 +1,6 @@
 {
   "name": "sampi",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "src/index.js",
   "scripts": {},
@@ -20,6 +20,7 @@
   "dependencies": {
     "chalk-pipe": "^2.0.0",
     "commander": "^2.20.0",
+    "inquirer": "^6.3.1",
     "inquirer-fuzzy-path": "^2.0.3",
     "ora": "^3.4.0"
   },

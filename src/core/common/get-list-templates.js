@@ -19,7 +19,12 @@ const getListTemplates = (path, prefix = '') => {
     return result;
   };
 
-  return fs.readdirSync(path).reduce(parseFile, []);
+  const isDir = fs.statSync(path).isDirectory();
+  if (isDir) {
+    return fs.readdirSync(path).reduce(parseFile, []);
+  }
+
+  return [];
 };
 
 module.exports = getListTemplates;

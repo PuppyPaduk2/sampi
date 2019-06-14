@@ -1,15 +1,13 @@
 const fs = require('fs');
-const path = require('path');
 
 /**
  * @param {String} pathFrom
  * @param {String} pathTo
- * @param {{ [nameProp: string]: Function }} [callbacks]
+ * @param {Function} [callback]
  */
-module.exports = (pathFrom, pathTo, callbacks = {}) => {
+module.exports = (pathFrom, pathTo, callback) => {
   const file = fs.readFileSync(pathFrom);
   let fileStr = file.toString();
-  const callback = callbacks[path.extname(pathFrom)];
 
   if (callback) {
     fileStr = callback({
