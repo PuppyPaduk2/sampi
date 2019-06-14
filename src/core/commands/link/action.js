@@ -44,7 +44,7 @@ const getPath = async (nameModule) => {
  */
 module.exports = async (nameModule, { path }) => {
   const indicator = ora('Create link').start();
-  const result = main({
+  const result = await main({
     path: process.cwd() + (path ? `/${path}` : ''),
     nameModule,
   });

@@ -8,15 +8,17 @@ const config = require('../../../config');
  * Delete module from modules.json
  * @param {String} nameModule
  */
-const deleteModule = (nameModule) => {
+const deleteModule = async (nameModule) => {
   const modules = require(config.paths.modulesJson);
-
-  console.log(nameModule);
+  let result = false;
 
   if (modules[nameModule]) {
     delete modules[nameModule];
     fs.writeFileSync(config.paths.modulesJson, JSON.stringify(modules, null, '  '));
+    result = true;
   }
+
+  return result;
 };
 
 const getNameModule = async () => {
@@ -36,17 +38,20 @@ const unlink = async (nameModule) => {
   const indicator = ora('Unlink module').start();
 
   if (fs.existsSync(config.paths.modulesJson)) {
-    if (nameModule) {
-      deleteModule(nameModule);
-    } else {
+    if (!nameModule) {
       indicator.stop();
 
       // Get name module
       nameModule = await getNameModule();
       indicator.start();
-      deleteModule(nameModule);
     }
-    indicator.succeed('Module unlink');
+
+    const resultDelete = await deleteModule(nameModule);
+    if (resultDelete) {
+      indicator.succeed('Module unlink');
+    } else {
+      indicator.fail(`Module with name \`${nameModule}\` doesn't exist`);
+    }
   } else {
     indicator.fail("Modules doesn't exist");
   }
@@ -56,3 +61,4 @@ module.exports = (...args) => {
   unlink(...args);
 };
 module.exports.deleteModule = deleteModule;
+module.exports.getNameModule = getNameModule;
