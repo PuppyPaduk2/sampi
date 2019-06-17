@@ -1,38 +1,14 @@
 const ora = require('ora');
 const fs = require('fs');
 
-const linkAction = require('../link/action');
+const modules = require('../../common/modules');
 const cloneDir = require('../../common/clone-dir');
-const conifg = require('../../../config');
-
-/**
- *
- * @param {String} nameModule
- */
-const getPathToModule = async (nameModule) => {
-  let result = await linkAction.getPath(nameModule || conifg.defaultModuleName);
-  if (!result && nameModule) {
-    indicator.warn(
-      `Insert doesn't correct name-module, will be use ${conifg.defaultModuleName} module`,
-    );
-    result = await linkAction.getPath(conifg.defaultModuleName);
-  }
-  return result;
-};
 
 const create = async (nameTemplate, { nameModule, path }) => {
   const indicator = ora('Create template').start();
 
-  // Create link to `main` module
-  if (!nameModule) {
-    linkAction.main({
-      nameModule: conifg.defaultModuleName,
-      path: conifg.paths.defaultModule,
-    });
-  }
-
   // Get path to module by `nameModule`
-  const pathToModule = await getPathToModule(nameModule);
+  const pathToModule = await modules.getPathModule(nameModule);
 
   // Create folder
   const pathTo = `${pathToModule}/${nameTemplate}/template`;
@@ -43,8 +19,10 @@ const create = async (nameTemplate, { nameModule, path }) => {
 
     // Clone template
     const pathFrom = process.cwd() + (path ? `/${path}` : '');
-    indicator.info(`From: ${pathFrom}`);
-    indicator.info(`To: ${pathTo}`);
+    indicator
+      .info(`From: ${pathFrom}`)
+      .info(`To: ${pathTo}`)
+      .start();
     cloneDir(pathFrom, pathTo);
 
     indicator.succeed('Template created');
@@ -54,4 +32,3 @@ const create = async (nameTemplate, { nameModule, path }) => {
 module.exports = (...args) => {
   create(...args);
 };
-module.exports.getPathToModule = getPathToModule;

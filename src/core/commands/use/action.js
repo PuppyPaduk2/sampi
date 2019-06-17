@@ -2,16 +2,16 @@ const ora = require('ora');
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-const createAction = require('../create/action');
 const getListTemplates = require('../../common/get-list-templates');
 const cloneDir = require('../../common/clone-dir');
+const modules = require('../../common/modules');
 const package = require('../../../index');
 
 const use = async (nameModule, { path }) => {
   const indicator = ora('Use template').start();
 
   // Get path to module
-  const pathModule = await createAction.getPathToModule(nameModule);
+  const pathModule = await modules.getPathModule(nameModule);
   indicator.info(`Path to module: ${pathModule}`);
 
   // Get name template

@@ -1,34 +1,15 @@
 const inquirer = require('inquirer');
 const ora = require('ora');
-const fs = require('fs');
 
-const config = require('../../../config');
-
-/**
- * Delete module from modules.json
- * @param {String} nameModule
- */
-const deleteModule = async (nameModule) => {
-  const modules = require(config.paths.modulesJson);
-  let result = false;
-
-  if (modules[nameModule]) {
-    delete modules[nameModule];
-    fs.writeFileSync(config.paths.modulesJson, JSON.stringify(modules, null, '  '));
-    result = true;
-  }
-
-  return result;
-};
+const modules = require('../../common/modules');
 
 const getNameModule = async () => {
-  const modules = require(config.paths.modulesJson);
   const { nameModule } = await inquirer.prompt([
     {
       type: 'list',
       name: 'nameModule',
       message: 'Select module',
-      choices: Object.keys(modules),
+      choices: await modules.getListModules(),
     },
   ]);
   return nameModule;
@@ -37,16 +18,17 @@ const getNameModule = async () => {
 const unlink = async (nameModule) => {
   const indicator = ora('Unlink module').start();
 
-  if (fs.existsSync(config.paths.modulesJson)) {
-    if (!nameModule) {
-      indicator.stop();
+  if (modules.existModulesJson()) {
+    indicator.stop();
 
+    if (!nameModule) {
       // Get name module
       nameModule = await getNameModule();
-      indicator.start();
     }
 
-    const resultDelete = await deleteModule(nameModule);
+    indicator.start();
+
+    const resultDelete = await modules.deleteModule(nameModule);
     if (resultDelete) {
       indicator.succeed('Module unlink');
     } else {
@@ -60,5 +42,3 @@ const unlink = async (nameModule) => {
 module.exports = (...args) => {
   unlink(...args);
 };
-module.exports.deleteModule = deleteModule;
-module.exports.getNameModule = getNameModule;

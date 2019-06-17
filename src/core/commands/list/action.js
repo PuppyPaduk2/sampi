@@ -1,9 +1,9 @@
-const config = require('../../../config');
+const modules = require('../../common/modules');
 
 const action = async (what) => {
   if (what === 'modules') {
-    const modules = require(config.paths.modulesJson);
-    console.log(Object.keys(modules).join('  '));
+    const list = await modules.getListModules();
+    console.log(list.join('  '));
   }
 };
 

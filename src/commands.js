@@ -4,19 +4,17 @@ const program = require('commander');
 const fs = require('fs');
 
 const package = require('../package.json');
-
-// Path to commands
-const pathCommands = `${__dirname}/core/commands`;
+const config = require('../config');
 
 /**
  * Require command file and run default export function
  *
  * @param {string} commandName
  */
-const initCommand = commandName => require(`${pathCommands}/${commandName}`)();
+const initCommand = commandName => require(`${config.paths.commands}/${commandName}`)();
 
 // Init all commands
-fs.readdirSync(pathCommands).forEach(initCommand);
+fs.readdirSync(config.paths.commands).forEach(initCommand);
 
 // Setup main options and version
 program.option(
