@@ -1,10 +1,12 @@
 const fs = require('fs');
 
 /**
- * @param {string} path
- * @param {string} [prefix]
+ * getListTemplates()
  *
- * @returns {Array<string>}
+ * @param {string} path - path to folder with templates
+ * @param {string} [prefix] - for get subtemplates (recursive `getListTemplates`)
+ *
+ * @returns {Array<string>} list templates
  */
 const getListTemplates = (path, prefix = '') => {
   const parseFile = (result, file) => {
@@ -17,7 +19,12 @@ const getListTemplates = (path, prefix = '') => {
     return result;
   };
 
-  return fs.readdirSync(path).reduce(parseFile, []);
+  const isDir = fs.statSync(path).isDirectory();
+  if (isDir) {
+    return fs.readdirSync(path).reduce(parseFile, []);
+  }
+
+  return [];
 };
 
 module.exports = getListTemplates;
